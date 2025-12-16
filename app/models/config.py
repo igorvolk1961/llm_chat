@@ -23,6 +23,8 @@ class AppConfig(BaseModel):
     stats_dir: Path = Field(..., description="Путь к папке статистики")
     prompts_dir: Path = Field(..., description="Путь к папке с промптами")
     system_prompt_path: Path = Field(..., description="Путь к файлу системного промпта")
+    temperature: Optional[float] = Field(default=None, description="Температура (приоритет над значением из конфигурации модели)")
+    max_tokens: Optional[int] = Field(default=None, description="Максимальная длина ответа (приоритет над значением из конфигурации модели)")
     logging: Optional[LoggingConfig] = Field(default=None, description="Конфигурация логирования")
 
 

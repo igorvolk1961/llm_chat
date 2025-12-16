@@ -1,9 +1,11 @@
 # Конфигурационный файл приложения
 model_config_path: config/deepseek_config.yaml
+temperature: 0.7
+max_tokens: 4000
+system_prompt_path: prompts/common_system_prompt.txt
 contexts_dir: contexts
 stats_dir: contexts
 prompts_dir: prompts
-system_prompt_path: prompts/common_system_prompt.txt
 
 # Конфигурация логирования
 logging:

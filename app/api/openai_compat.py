@@ -27,7 +27,7 @@ def get_services():
     
     if _config_manager is None:
         _config_manager = ConfigManager(Path("config/config.yaml"))
-        _llm_client = LLMClient(_config_manager.model_config)
+        _llm_client = LLMClient(_config_manager.model_config, _config_manager.app_config)
         _current_storage = CurrentDataStorage(_config_manager.app_config.contexts_dir)
         _stats_storage = StatsStorage(_config_manager.app_config.stats_dir)
     

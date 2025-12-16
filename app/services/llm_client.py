@@ -6,7 +6,7 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 
 from app.models.chat import ChatCompletionRequest, ChatCompletionResponse
-from app.models.config import ModelConfig
+from app.models.config import ModelConfig, AppConfig
 from app.models.metadata import ResponseMetadata
 
 logger = logging.getLogger(__name__)
@@ -15,19 +15,28 @@ logger = logging.getLogger(__name__)
 class LLMClient:
     """Клиент для работы с LLM провайдером"""
     
-    def __init__(self, model_config: ModelConfig):
+    def __init__(self, model_config: ModelConfig, app_config: Optional[AppConfig] = None):
         """
         Инициализация клиента
         
         Args:
             model_config: Конфигурация модели
+            app_config: Конфигурация приложения (опционально, для переопределения параметров модели)
         """
         self.model_config = model_config
+        self.app_config = app_config
         self.base_url = model_config.provider_url.rstrip('/')
         self.api_key = model_config.api_key
         self.default_model = model_config.model_name
-        self.default_temperature = model_config.temperature
-        self.default_max_tokens = model_config.max_tokens
+        # Используем значения из app_config если они есть, иначе из model_config
+        self.default_temperature = (
+            app_config.temperature if app_config and app_config.temperature is not None
+            else model_config.temperature
+        )
+        self.default_max_tokens = (
+            app_config.max_tokens if app_config and app_config.max_tokens is not None
+            else model_config.max_tokens
+        )
     
     async def chat_completion(
         self,
