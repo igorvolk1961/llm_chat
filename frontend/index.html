@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Chat Debugger</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Верхняя панель - входные данные -->
+        <div class="panel top-panel" id="topPanel">
+            <div class="panel-header">
+                <div class="tabs" id="topTabs">
+                    <button class="tab-button active" data-tab="prompt">Промпт</button>
+                    <button class="tab-button" data-tab="system-prompt">Системный промпт</button>
+                    <button class="tab-button" data-tab="tools">tools</button>
+                    <button class="tab-button" data-tab="context">Контекст</button>
+                    <button class="tab-button" data-tab="config">Конфигурация</button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <!-- Вкладка Промпт -->
+                <div class="tab-content active" id="tab-prompt">
+                    <div class="input-section">
+                        <div class="file-path-display" id="promptPathDisplay">Путь: Новый промпт</div>
+                        <textarea id="promptInput" class="text-input" placeholder="Введите промпт..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="savePromptBtn">Сохранить</button>
+                            <button class="btn btn-secondary" id="loadPromptBtn">Загрузить</button>
+                            <button class="btn btn-secondary" id="clearPromptBtn">Очистить</button>
+                        </div>
+                        <input type="file" id="promptFileInput" accept=".txt,.md" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- Вкладка Системный промпт -->
+                <div class="tab-content" id="tab-system-prompt">
+                    <div class="input-section">
+                        <div class="file-path-display" id="systemPromptPathDisplay">Путь: загрузка...</div>
+                        <textarea id="systemPromptInput" class="text-input" placeholder="Введите системный промпт..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="saveSystemPromptBtn">Сохранить</button>
+                            <button class="btn btn-secondary" id="loadSystemPromptBtn">Загрузить</button>
+                            <button class="btn btn-secondary" id="loadDefaultSystemPromptBtn">Загрузить системный промпт по умолчанию</button>
+                            <button class="btn btn-secondary" id="clearSystemPromptBtn">Очистить</button>
+                        </div>
+                        <input type="file" id="systemPromptFileInput" accept=".txt,.md" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- Вкладка tools -->
+                <div class="tab-content" id="tab-tools">
+                    <div class="input-section">
+                        <textarea id="toolsInput" class="text-input code-input" placeholder='[{"type": "function", "function": {...}}]'></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="saveToolsBtn">Сохранить</button>
+                            <button class="btn btn-secondary" id="loadToolsBtn">Загрузить</button>
+                            <button class="btn btn-secondary" id="clearToolsBtn">Очистить</button>
+                        </div>
+                        <input type="file" id="toolsFileInput" accept=".json,.txt" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- Вкладка Контекст -->
+                <div class="tab-content" id="tab-context">
+                    <div class="context-container">
+                        <div class="file-path-display" id="contextPathDisplay">Путь: загрузка...</div>
+                        <div class="accordion-wrapper">
+                            <div class="accordion" id="contextAccordion">
+                                <!-- Messages будут добавлены динамически -->
+                            </div>
+                        </div>
+                        <div class="context-controls">
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="saveContextBtn">Сохранить</button>
+                                <button class="btn btn-secondary" id="loadContextBtn">Загрузить</button>
+                                <button class="btn btn-secondary" id="clearContextBtn">Очистить</button>
+                            </div>
+                            <button class="btn btn-secondary" id="addMessageBtn">Добавить message</button>
+                        </div>
+                        <input type="file" id="contextFileInput" accept=".json" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- Вкладка Конфигурация -->
+                <div class="tab-content" id="tab-config">
+                    <div class="input-section">
+                        <div class="file-path-display" id="configPathDisplay">Путь: config/config.yaml</div>
+                        <textarea id="configInput" class="text-input code-input" placeholder="Конфигурация YAML..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="saveConfigBtn">Сохранить конфигурацию</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Сплитер -->
+        <div class="splitter" id="splitter">
+            <div class="splitter-handle"></div>
+        </div>
+        
+        <!-- Нижняя панель - выходные данные -->
+        <div class="panel bottom-panel" id="bottomPanel">
+            <div class="panel-header">
+                <div class="tabs" id="bottomTabs">
+                    <button class="tab-button active" data-tab="content">Ответ модели (content)</button>
+                    <button class="tab-button" data-tab="tool-call">Ответ модели (tool_call)</button>
+                    <button class="tab-button" data-tab="metadata">Метаданные</button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <!-- Вкладка Ответ модели (content) -->
+                <div class="tab-content active" id="tab-content">
+                    <div class="output-section">
+                        <div id="contentOutput" class="markdown-output"></div>
+                    </div>
+                </div>
+                
+                <!-- Вкладка Ответ модели (tool_call) -->
+                <div class="tab-content" id="tab-tool-call">
+                    <div class="output-section">
+                        <div id="toolCallOutput" class="json-output"></div>
+                    </div>
+                </div>
+                
+                <!-- Вкладка Метаданные -->
+                <div class="tab-content" id="tab-metadata">
+                    <div class="output-section">
+                        <div id="metadataOutput" class="metadata-output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопка отправки запроса -->
+    <div class="send-button-container">
+        <button class="btn btn-primary btn-large" id="sendRequestBtn">Отправить запрос</button>
+    </div>
+    
+    <script src="/static/api.js"></script>
+    <script src="/static/notifications.js"></script>
+    <script src="/static/prompts.js"></script>
+    <script src="/static/context.js"></script>
+    <script src="/static/config.js"></script>
+    <script src="/static/output.js"></script>
+    <script src="/static/request.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
+

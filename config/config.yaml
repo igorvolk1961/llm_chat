@@ -1,0 +1,15 @@
+# Конфигурационный файл приложения
+model_config_path: config/deepseek_config.yaml
+contexts_dir: contexts
+stats_dir: contexts
+prompts_dir: prompts
+system_prompt_path: prompts/common_system_prompt.txt
+
+# Конфигурация логирования
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: logs/app.log  # Путь к файлу логов (опционально, можно не указывать)
+  console: true  # Вывод логов в консоль
+  append: false  # true - добавлять логи в конец файла, false - перезаписывать файл при запуске (по умолчанию)
+

@@ -1,0 +1,9 @@
+# Конфигурационный файл модели
+# DeepSeek API (OpenAI-совместимый)
+provider_url: https://api.deepseek.com/v1
+api_key: sk-cccb6c5d17754acfaaacb2d0a4e62458
+model_name: deepseek-chat
+temperature: 0.7
+max_tokens: 4000
+system_prompt_path: prompts/default_system_prompt.txt
+
