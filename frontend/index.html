@@ -14,7 +14,8 @@
                 <div class="tabs" id="topTabs">
                     <button class="tab-button active" data-tab="prompt">Промпт</button>
                     <button class="tab-button" data-tab="system-prompt">Системный промпт</button>
-                    <button class="tab-button" data-tab="tools">tools</button>
+                    <button class="tab-button" data-tab="tools">Инструменты</button>
+                    <button class="tab-button" data-tab="tool-responses">Ответы на инструменты</button>
                     <button class="tab-button" data-tab="context">Контекст</button>
                     <button class="tab-button" data-tab="config">Конфигурация</button>
                 </div>
@@ -49,7 +50,7 @@
                     </div>
                 </div>
                 
-                <!-- Вкладка tools -->
+                <!-- Вкладка Инструменты -->
                 <div class="tab-content" id="tab-tools">
                     <div class="input-section">
                         <textarea id="toolsInput" class="text-input code-input" placeholder='[{"type": "function", "function": {...}}]'></textarea>
@@ -59,6 +60,15 @@
                             <button class="btn btn-secondary" id="clearToolsBtn">Очистить</button>
                         </div>
                         <input type="file" id="toolsFileInput" accept=".json,.txt" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- Вкладка Ответы на инструменты -->
+                <div class="tab-content" id="tab-tool-responses">
+                    <div class="input-section">
+                        <div id="toolResponsesContainer">
+                            <p style="color: #858585;">Нет активных запросов инструментов</p>
+                        </div>
                     </div>
                 </div>
                 
@@ -145,6 +155,7 @@
     <script src="/static/prompts.js"></script>
     <script src="/static/context.js"></script>
     <script src="/static/config.js"></script>
+    <script src="/static/tool_responses.js"></script>
     <script src="/static/output.js"></script>
     <script src="/static/request.js"></script>
     <script src="/static/app.js"></script>

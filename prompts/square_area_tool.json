@@ -1,0 +1,20 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "calculate_square_area",
+      "description": "Вычисляет площадь квадрата по длине его стороны",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "side": {
+            "type": "number",
+            "description": "Длина стороны квадрата в единицах измерения"
+          }
+        },
+        "required": ["side"]
+      }
+    }
+  }
+]
+

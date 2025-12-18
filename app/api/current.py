@@ -148,8 +148,15 @@ async def set_current_context(context: CurrentContext):
 @router.delete("/context")
 async def clear_current_context():
     """Очистить текущий контекст"""
+    import logging
+    logger = logging.getLogger(__name__)
+    
     _, _, current_storage, _ = get_storages()
-    current_storage.clear_current_context()
+    result = current_storage.clear_current_context()
+    if result:
+        logger.info("Текущий контекст успешно очищен (файл удален)")
+    else:
+        logger.warning("Попытка очистить контекст: файл не найден")
     return {"message": "Текущий контекст очищен"}
 
 

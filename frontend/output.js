@@ -99,7 +99,7 @@ function initToolCallTab() {
         }
     }
     
-    // Создание элемента tool_call в гармошке
+    // Создание элемента tool_call в гармошке (только для отображения, без форм ввода)
     function createToolCallElement(toolCall, index) {
         const item = document.createElement('div');
         item.className = 'accordion-item';
@@ -117,7 +117,6 @@ function initToolCallTab() {
         
         // Информация о tool_call (только чтение)
         const infoSection = document.createElement('div');
-        infoSection.style.marginBottom = '16px';
         infoSection.style.padding = '12px';
         infoSection.style.backgroundColor = '#1e1e1e';
         infoSection.style.borderRadius = '4px';
@@ -134,75 +133,14 @@ function initToolCallTab() {
                 <strong style="color: #007acc;">Аргументы:</strong>
                 <pre style="margin-top: 4px; padding: 8px; background-color: #252526; border-radius: 4px; overflow-x: auto;"><code style="color: #d4d4d4; font-family: 'Consolas', 'Monaco', monospace;">${JSON.stringify(JSON.parse(toolCall.function?.arguments || '{}'), null, 2)}</code></pre>
             </div>
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #3e3e42;">
+                <p style="color: #858585; font-size: 0.9em;">
+                    💡 Для ввода ответа на этот запрос инструмента перейдите на вкладку <strong>"Ответы на инструменты"</strong> в верхней панели
+                </p>
+            </div>
         `;
-        
-        // Форма для создания tool message
-        const formSection = document.createElement('div');
-        formSection.innerHTML = `
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; margin-bottom: 4px; color: #cccccc;">Tool Call ID (предзаполнено):</label>
-                <input type="text" class="tool-message-id" value="${toolCall.id}" readonly style="width: 100%; padding: 8px; background-color: #2d2d30; border: 1px solid #3e3e42; color: #858585; border-radius: 4px;">
-            </div>
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; margin-bottom: 4px; color: #cccccc;">Name (предзаполнено):</label>
-                <input type="text" class="tool-message-name" value="${toolCall.function?.name || ''}" readonly style="width: 100%; padding: 8px; background-color: #2d2d30; border: 1px solid #3e3e42; color: #858585; border-radius: 4px;">
-            </div>
-            <div style="margin-bottom: 12px;">
-                <label style="display: block; margin-bottom: 4px; color: #cccccc;">Content (результат выполнения):</label>
-                <textarea class="tool-message-content" placeholder='Введите результат выполнения функции (обычно JSON строка)' style="width: 100%; min-height: 120px; padding: 8px; background-color: #1e1e1e; border: 1px solid #3e3e42; color: #d4d4d4; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical;"></textarea>
-            </div>
-            <button class="btn btn-primary add-tool-message-btn" style="width: 100%;">Добавить tool message в контекст</button>
-        `;
-        
-        // Обработчик кнопки добавления
-        const addBtn = formSection.querySelector('.add-tool-message-btn');
-        addBtn.addEventListener('click', async () => {
-            const toolCallId = formSection.querySelector('.tool-message-id').value;
-            const name = formSection.querySelector('.tool-message-name').value;
-            const content = formSection.querySelector('.tool-message-content').value.trim();
-            
-            if (!content) {
-                alert('Заполните поле Content');
-                return;
-            }
-            
-            // Добавляем tool message в контекст
-            try {
-                // Получаем текущий контекст
-                const currentContext = await api.getCurrentContext();
-                const messages = currentContext.messages || [];
-                
-                // Создаем tool message
-                const toolMessage = {
-                    role: 'tool',
-                    tool_call_id: toolCallId,
-                    name: name,
-                    content: content
-                };
-                
-                // Добавляем в контекст
-                messages.push(toolMessage);
-                
-                // Сохраняем контекст
-                await api.setCurrentContext(currentContext.name || '', messages);
-                
-                api.showSuccess('Tool message добавлен в контекст');
-                
-                // Очищаем поле content
-                formSection.querySelector('.tool-message-content').value = '';
-                
-                // Обновляем вкладку контекста (если она открыта)
-                if (typeof initContextTab === 'function') {
-                    // Перезагружаем контекст
-                    location.reload(); // Простой способ обновить
-                }
-            } catch (error) {
-                // Ошибка уже показана в API клиенте
-            }
-        });
         
         content.appendChild(infoSection);
-        content.appendChild(formSection);
         
         // Обработчик клика на заголовок
         header.addEventListener('click', () => {

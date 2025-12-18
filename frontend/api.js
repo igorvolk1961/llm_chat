@@ -226,6 +226,12 @@ class ApiClient {
         });
     }
     
+    async clearCurrentContext() {
+        return this.request('/api/current/context', {
+            method: 'DELETE'
+        });
+    }
+    
     async getCurrentContent() {
         return this.request('/api/current/content');
     }
@@ -279,4 +285,9 @@ class ApiClient {
 
 // Глобальный экземпляр API клиента
 const api = new ApiClient();
+
+// Делаем доступным глобально через window для совместимости
+if (typeof window !== 'undefined') {
+    window.api = api;
+}
 

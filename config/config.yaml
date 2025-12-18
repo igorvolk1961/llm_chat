@@ -1,8 +1,11 @@
 # Конфигурационный файл приложения
-model_config_path: config/deepseek_config.yaml
+model_config_path: config/immers-cloud_t-pro_config.yaml
 temperature: 0.7
 max_tokens: 4000
-system_prompt_path: prompts/common_system_prompt.txt
+timeout: 600  # Таймаут запроса к LLM провайдеру в секундах (по умолчанию 60)
+host: 0.0.0.0  # Хост для запуска сервера (по умолчанию 0.0.0.0)
+port: 8080  # Порт для запуска сервера (по умолчанию 8080)
+system_prompt_path: prompts/default_system_prompt.txt
 contexts_dir: contexts
 stats_dir: contexts
 prompts_dir: prompts

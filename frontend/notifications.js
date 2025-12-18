@@ -50,9 +50,19 @@ function showConfirm(message, callback) {
     const confirmBtn = document.createElement('button');
     confirmBtn.textContent = 'Подтвердить';
     confirmBtn.className = 'btn btn-primary';
-    confirmBtn.addEventListener('click', () => {
+    confirmBtn.addEventListener('click', async () => {
         overlay.remove();
-        if (callback) callback();
+        if (callback) {
+            try {
+                const result = callback();
+                // Если callback возвращает Promise, ждем его выполнения
+                if (result instanceof Promise) {
+                    await result;
+                }
+            } catch (error) {
+                console.error('Error in confirm callback:', error);
+            }
+        }
     });
     
     buttonGroup.appendChild(cancelBtn);

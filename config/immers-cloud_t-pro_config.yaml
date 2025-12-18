@@ -1,0 +1,9 @@
+# Конфигурационный файл модели
+# vllm API (OpenAI-совместимый)
+provider_url: http://localhost:8000/v1
+api_key: sk-cccb6c5d17754acfaaacb2d0a4e62458
+model_name: t-tech/T-pro-it-2.0-FP8
+temperature: 0.7
+max_tokens: 4000
+system_prompt_path: prompts/default_system_prompt.txt
+

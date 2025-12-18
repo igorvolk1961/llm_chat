@@ -37,18 +37,23 @@ class LLMClient:
             app_config.max_tokens if app_config and app_config.max_tokens is not None
             else model_config.max_tokens
         )
+        # Таймаут по умолчанию: из app_config, иначе 60 секунд
+        self.default_timeout = (
+            app_config.timeout if app_config and app_config.timeout is not None
+            else 60.0
+        )
     
     async def chat_completion(
         self,
         request: ChatCompletionRequest,
-        timeout: float = 60.0
+        timeout: Optional[float] = None
     ) -> tuple[ChatCompletionResponse, ResponseMetadata]:
         """
         Отправить запрос к LLM провайдеру
         
         Args:
             request: Запрос к API
-            timeout: Таймаут запроса в секундах
+            timeout: Таймаут запроса в секундах (если None, используется значение из конфигурации)
         
         Returns:
             Кортеж (ответ модели, метаданные)
@@ -60,10 +65,13 @@ class LLMClient:
             request.max_tokens = self.default_max_tokens
         if not request.model or request.model.strip() == '':
             request.model = self.default_model
+        # Используем timeout из параметра, если передан, иначе из конфигурации
+        if timeout is None:
+            timeout = self.default_timeout
         
         # Формируем URL
         url = f"{self.base_url}/chat/completions"
-        logger.debug(f"Отправка запроса к {url}")
+        logger.info(f"Отправка запроса к LLM провайдеру: URL={url}, timeout={timeout}s")
         
         # Формируем заголовки
         headers = {
@@ -74,25 +82,54 @@ class LLMClient:
         # Подготавливаем данные запроса
         request_data = request.model_dump(exclude_none=True)
         logger.debug(f"Параметры запроса: model={request_data.get('model')}, max_tokens={request_data.get('max_tokens')}, temperature={request_data.get('temperature')}")
+        logger.debug(f"Количество сообщений: {len(request_data.get('messages', []))}")
         
         # Засекаем время начала запроса
         start_time = time.time()
         
-        async with httpx.AsyncClient(timeout=timeout) as client:
-            response = await client.post(
-                url,
-                headers=headers,
-                json=request_data
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                logger.debug(f"Выполнение POST запроса к {url}")
+                response = await client.post(
+                    url,
+                    headers=headers,
+                    json=request_data
+                )
+                
+                # Проверяем статус ответа
+                response.raise_for_status()
+                
+                # Парсим ответ
+                response_data = response.json()
+                
+                # Время получения ответа (приблизительно - время до первого токена)
+                time_to_first_token = time.time() - start_time
+        except httpx.TimeoutException as e:
+            elapsed = time.time() - start_time
+            logger.error(
+                f"Таймаут подключения к LLM провайдеру: "
+                f"URL={url}, timeout={timeout}s, elapsed={elapsed:.2f}s, "
+                f"error_type={type(e).__name__}, error={str(e)}"
             )
-            
-            # Проверяем статус ответа
-            response.raise_for_status()
-            
-            # Парсим ответ
-            response_data = response.json()
-            
-            # Время получения ответа (приблизительно - время до первого токена)
-            time_to_first_token = time.time() - start_time
+            raise
+        except httpx.ConnectError as e:
+            elapsed = time.time() - start_time
+            logger.error(
+                f"Ошибка подключения к LLM провайдеру: "
+                f"URL={url}, elapsed={elapsed:.2f}s, "
+                f"error_type={type(e).__name__}, error={str(e)}, "
+                f"request_url={getattr(e.request, 'url', 'N/A') if hasattr(e, 'request') else 'N/A'}"
+            )
+            raise
+        except httpx.RequestError as e:
+            elapsed = time.time() - start_time
+            logger.error(
+                f"Ошибка запроса к LLM провайдеру: "
+                f"URL={url}, elapsed={elapsed:.2f}s, "
+                f"error_type={type(e).__name__}, error={str(e)}, "
+                f"request_url={getattr(e.request, 'url', 'N/A') if hasattr(e, 'request') else 'N/A'}"
+            )
+            raise
         
         # Время завершения запроса
         end_time = time.time()

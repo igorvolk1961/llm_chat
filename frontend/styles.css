@@ -30,13 +30,16 @@ body {
 }
 
 .top-panel {
-    flex: 1;
-    min-height: 200px;
+    flex: 1 1 auto;
+    min-height: 100px;
+    max-height: calc(100vh - 100px);
+    overflow: hidden;
 }
 
 .bottom-panel {
-    flex: 1;
-    min-height: 200px;
+    flex: 1 1 auto;
+    min-height: 100px;
+    overflow: hidden;
 }
 
 .panel-header {

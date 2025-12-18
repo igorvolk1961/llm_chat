@@ -108,15 +108,52 @@ async function sendRequest() {
                 await window.reloadContext();
             }
             
-            // Обновляем нижнюю панель
-            if (typeof window.updateContent === 'function') {
+            // Обновляем нижнюю панель ТОЛЬКО если есть соответствующие данные в ответе
+            // Content обновляем только если есть content в ответе (не только tool_calls)
+            if (message.content && typeof window.updateContent === 'function') {
                 await window.updateContent();
+            } else if (!message.content && typeof window.updateContent === 'function') {
+                // Если content нет, очищаем отображение
+                const contentOutput = document.getElementById('contentOutput');
+                if (contentOutput) {
+                    contentOutput.innerHTML = '<p style="color: #858585;">Нет данных</p>';
+                }
             }
-            if (typeof window.updateToolCalls === 'function') {
+            
+            // Tool calls обновляем только если есть tool_calls
+            if (message.tool_calls && message.tool_calls.length > 0 && typeof window.updateToolCalls === 'function') {
                 await window.updateToolCalls();
+            } else if ((!message.tool_calls || message.tool_calls.length === 0) && typeof window.updateToolCalls === 'function') {
+                // Если tool_calls нет, очищаем отображение
+                const toolCallOutput = document.getElementById('toolCallOutput');
+                if (toolCallOutput) {
+                    toolCallOutput.innerHTML = '<p style="color: #858585;">Инструменты не использованы</p>';
+                }
             }
+            
+            // Метаданные обновляем всегда (они есть в любом ответе)
             if (typeof window.updateMetadata === 'function') {
                 await window.updateMetadata();
+            }
+            
+            // Обновляем верхнюю панель - вкладку ответов на инструменты
+            if (typeof window.updateToolResponses === 'function') {
+                await window.updateToolResponses();
+                
+                // Если есть tool_calls, переключаемся на вкладку "Ответы на инструменты" и раскрываем первый шаблон
+                if (message.tool_calls && message.tool_calls.length > 0) {
+                    // Переключаемся на вкладку "Ответы на инструменты"
+                    if (typeof switchTopTab === 'function') {
+                        switchTopTab('tool-responses');
+                    }
+                    
+                    // Раскрываем первый шаблон ответа и фокусируемся на textarea
+                    setTimeout(() => {
+                        if (typeof window.expandFirstToolResponse === 'function') {
+                            window.expandFirstToolResponse();
+                        }
+                    }, 100); // Небольшая задержка для завершения рендеринга
+                }
             }
         }
         

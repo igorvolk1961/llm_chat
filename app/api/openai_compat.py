@@ -78,11 +78,45 @@ async def chat_completions(request: ChatCompletionRequest):
             status_code=e.response.status_code,
             detail=f"Ошибка LLM провайдера: {e.response.text}"
         )
-    except httpx.RequestError as e:
-        logger.error(f"Ошибка подключения к LLM провайдеру: {str(e)}")
+    except httpx.TimeoutException as e:
+        error_msg = (
+            f"Таймаут подключения к LLM провайдеру. "
+            f"Тип ошибки: {type(e).__name__}, "
+            f"Сообщение: {str(e) if str(e) else 'Таймаут запроса'}"
+        )
+        logger.error(error_msg)
+        logger.debug(f"Детали ошибки таймаута: {repr(e)}")
+        raise HTTPException(
+            status_code=504,
+            detail=error_msg
+        )
+    except httpx.ConnectError as e:
+        error_msg = (
+            f"Ошибка подключения к LLM провайдеру. "
+            f"Тип ошибки: {type(e).__name__}, "
+            f"Сообщение: {str(e) if str(e) else 'Не удалось установить соединение'}"
+        )
+        logger.error(error_msg)
+        logger.debug(f"Детали ошибки подключения: {repr(e)}")
+        if hasattr(e, 'request') and e.request:
+            logger.debug(f"URL запроса: {e.request.url}")
         raise HTTPException(
             status_code=503,
-            detail=f"Ошибка подключения к LLM провайдеру: {str(e)}"
+            detail=error_msg
+        )
+    except httpx.RequestError as e:
+        error_msg = (
+            f"Ошибка запроса к LLM провайдеру. "
+            f"Тип ошибки: {type(e).__name__}, "
+            f"Сообщение: {str(e) if str(e) else 'Ошибка при выполнении запроса'}"
+        )
+        logger.error(error_msg)
+        logger.debug(f"Детали ошибки запроса: {repr(e)}")
+        if hasattr(e, 'request') and e.request:
+            logger.debug(f"URL запроса: {e.request.url}")
+        raise HTTPException(
+            status_code=503,
+            detail=error_msg
         )
     except Exception as e:
         logger.exception(f"Внутренняя ошибка при обработке запроса: {str(e)}")

@@ -454,16 +454,33 @@ async function initContextTab() {
     
     // Очистка контекста
     clearContextBtn.addEventListener('click', () => {
-        showConfirm('Очистить контекст?', () => {
-            messages = [];
-            currentContextName = '';
-            window.messages = messages;
-            renderMessages();
-            updatePathDisplay();
-            
-            // Включаем поля системного промпта после очистки контекста
-            if (typeof window.updateSystemPromptFieldsState === 'function') {
-                window.updateSystemPromptFieldsState(true);
+        showConfirm('Очистить контекст?', async () => {
+            try {
+                // Проверяем наличие метода
+                if (!api || typeof api.clearCurrentContext !== 'function') {
+                    api.showError('Метод clearCurrentContext не доступен. Пожалуйста, обновите страницу (F5).');
+                    return;
+                }
+                
+                // Очищаем файл текущего контекста на сервере
+                await api.clearCurrentContext();
+                
+                // Очищаем локальные переменные
+                messages = [];
+                currentContextName = '';
+                window.messages = messages;
+                renderMessages();
+                await updatePathDisplay();
+                
+                // Включаем поля системного промпта после очистки контекста
+                if (typeof window.updateSystemPromptFieldsState === 'function') {
+                    window.updateSystemPromptFieldsState(true);
+                }
+                
+                api.showSuccess('Контекст очищен');
+            } catch (error) {
+                console.error('Ошибка при очистке контекста:', error);
+                api.showError('Ошибка при очистке контекста: ' + (error.message || 'Неизвестная ошибка'));
             }
         });
     });
