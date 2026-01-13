@@ -1,88 +1,116 @@
 [
   {
-  "type": "function",
-  "function": {
-    "name": "ReasoningBeforePlanningTool",
-    "description": "Анализирует данные триггера и формирует структурированный контекст для планирования. Определяет наличие ключевых данных и формирует чек-лист для последующего запроса в базу знаний.",
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "position_exists": {
-          "type": "boolean",
-          "description": "Есть ли в контексте указание должности целевого должностного лица?"
-        },
-        "position": {
-          "type": "string",
-          "description": "Должность целевого должностного лица"
-        },
-        "trigger_description_exists": {
-          "type": "boolean",
-          "description": "Есть ли в контексте описание триггера?"
-        },
-        "trigger_description": {
-          "type": "string",
-          "description": "Описание триггера"
-        },
-        "project_exists": {
-          "type": "boolean",
-          "description": "Есть ли в контексте указание проекта?"
-        },
-        "project": {
-          "type": "string",
-          "description": "Проект"
-        },
-        "duties_exist": {
-          "type": "boolean",
-          "description": "Есть ли в контексте указание должностных обязанностей, релевантных триггеру?"
-        },
-        "duties": {
-          "oneOf": [
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
+    "type": "function",
+    "function": {
+      "name": "ReasoningBeforePlanningTool",
+      "description": "Анализирует данные триггера и формирует структурированный контекст для планирования. Определяет наличие ключевых данных и формирует чек-лист для последующего запроса в базу знаний.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "trigger_description_exists": {
+            "type": "boolean",
+            "description": "Есть ли в контексте описание триггера?"
+          },
+          "trigger_description": {
+            "type": "string",
+            "description": "Описание триггера"
+          },
+          "role_exists": {
+            "type": "boolean",
+            "description": "Есть ли в контексте указание должности целевого должностного лица?"
+          },
+          "role": {
+            "type": "string",
+            "description": "Должность целевого должностного лица"
+          },
+          "duties_exist": {
+            "type": "boolean",
+            "description": "Есть ли в контексте указание должностных обязанностей, релевантных триггеру?"
+          },
+          "duties": {
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Список должностных обязанностей, релевантных триггеру"
               },
-              "description": "Список должностных обязанностей, релевантных триггеру"
-            },
-            {
-              "type": "string",
-              "description": "Должностные обязанности, релевантные триггеру, не определены. Необходимо вызвать инструмент PlaningTool"
-            }
-          ]
-        },
-        "actions_exist": {
-          "type": "boolean",
-          "description": "Есть ли в контексте описание конкретных действий, релевантных триггеру?"
-        },
-        "actions": {
-          "oneOf": [
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
+              {
+                "type": "string",
+                "description": "Должностные обязанности, релевантные триггеру, не определены. Необходимо вызвать инструмент PlaningTool"
+              }
+            ]
+          },
+          "actions_exist": {
+            "type": "boolean",
+            "description": "Есть ли в контексте описание конкретных действий, релевантных триггеру?"
+          },
+          "actions": {
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Список конкретных действий, релевантных триггеру"
               },
-              "description": "Список конкретных действий, релевантных триггеру"
-            },
-            {
-              "type": "string",
-              "description": "Конкретные действия, релевантные триггеру, не определены. Необходимо вызвать инструмент PlaningTool"
-            }
-          ]
-        }
-      },
-      "required": [
-        "position_exists",
-        "position",
-        "trigger_description_exists",
-        "trigger_description",
-        "project_exists",
-        "project",
-        "duties_exist",
-        "duties",
-        "actions_exist",
-        "actions"
-      ]
+              {
+                "type": "string",
+                "description": "Конкретные действия, релевантные триггеру, не определены. Необходимо вызвать инструмент PlaningTool"
+              }
+            ]
+          }
+        },
+        "required": [
+          "trigger_description_exists",
+          "trigger_description",
+          "role_exists",
+          "role",
+          "duties_exist",
+          "duties",
+          "actions_exist",
+          "actions"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "PlanningTool",
+      "description": "Формирует перечень общих процедурных действий, релевантных триггеру",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "trigger_description": {
+            "type": "string",
+            "description": "Описание триггера"
+          },
+          "role": {
+            "type": "string",
+            "description": "Должность целевого должностного лица"
+          },
+          "organization": {
+            "type": "string",
+            "description": "Место работы (организация) целевого должностного лица"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Время и дата события"
+          },
+          "context": {
+            "type": "object",
+            "description": "Контекст события"
+          }
+        },
+        "required": [
+          "trigger_description",
+          "role",
+          "organization",
+          "timestamp"
+        ]
+      }
     }
   }
-}
 ]
