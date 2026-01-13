@@ -1,0 +1,8 @@
+{
+  "trigger_id": "trigger_doc_prikaz_456",
+  "trigger_type": "Начало рабочей смены",
+  "role": { "position": "Помощник начальника участка №2" },
+  "document": None,
+  "project": "Строительство моста через реку Лена",
+  "context": {"timestamp":"09:00 13.01.2026"}
+}

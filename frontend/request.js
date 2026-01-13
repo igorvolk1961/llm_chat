@@ -59,20 +59,32 @@ async function sendRequest() {
             messages.push(...contextMessages);
         }
         
+        // Получаем заполненные tool messages из вкладки "Ответы на инструменты"
+        const toolMessages = getToolMessagesFromResponses();
+        
+        // Проверяем, что есть хотя бы промпт или tool messages
+        if (!prompt && toolMessages.length === 0) {
+            api.showError('Укажите промпт или заполните ответы на инструменты');
+            return;
+        }
+        
         // Добавляем промпт пользователя, если есть
-        let userPromptMessage = null;
         if (prompt) {
-            userPromptMessage = {
+            const userPromptMessage = {
                 role: 'user',
                 content: prompt
             };
             messages.push(userPromptMessage);
-            
-            // Сохраняем промпт пользователя в контекст ПЕРЕД отправкой запроса
-            // Используем массив messages, который уже содержит системный промпт и промпт пользователя
-            const currentContextForSave = await api.getCurrentContext();
-            await api.setCurrentContext(currentContextForSave.name || '', messages);
         }
+        
+        // Добавляем tool messages, если они есть
+        if (toolMessages.length > 0) {
+            messages.push(...toolMessages);
+        }
+        
+        // Сохраняем messages в контекст ПЕРЕД отправкой запроса
+        const currentContextForSave = await api.getCurrentContext();
+        await api.setCurrentContext(currentContextForSave.name || '', messages);
         
         // Формируем запрос
         // model не указываем - будет использоваться из конфигурации на backend
@@ -101,6 +113,21 @@ async function sendRequest() {
             const promptInput = document.getElementById('promptInput');
             if (promptInput) {
                 promptInput.value = '';
+            }
+            
+            // Очищаем поля Content во вкладке "Ответы на инструменты" после успешной отправки
+            const toolResponsesAccordion = document.getElementById('toolResponsesAccordion');
+            if (toolResponsesAccordion) {
+                const items = toolResponsesAccordion.querySelectorAll('.accordion-item');
+                items.forEach((item) => {
+                    const content = item.querySelector('.accordion-content');
+                    if (content) {
+                        const contentTextarea = content.querySelector('.tool-message-content');
+                        if (contentTextarea) {
+                            contentTextarea.value = '';
+                        }
+                    }
+                });
             }
             
             // Обновляем вкладку Контекст
@@ -166,6 +193,38 @@ async function sendRequest() {
         sendBtn.disabled = false;
         sendBtn.textContent = originalText;
     }
+}
+
+// Получение заполненных tool messages из вкладки "Ответы на инструменты"
+function getToolMessagesFromResponses() {
+    const toolMessages = [];
+    const accordion = document.getElementById('toolResponsesAccordion');
+    
+    if (!accordion || accordion.children.length === 0) {
+        return toolMessages;
+    }
+    
+    const items = accordion.querySelectorAll('.accordion-item');
+    items.forEach((item) => {
+        const content = item.querySelector('.accordion-content');
+        if (!content) return;
+        
+        const toolCallId = content.querySelector('.tool-message-id')?.value;
+        const name = content.querySelector('.tool-message-name')?.value;
+        const toolContent = content.querySelector('.tool-message-content')?.value.trim();
+        
+        // Добавляем только если поле Content заполнено
+        if (toolContent && toolCallId && name) {
+            toolMessages.push({
+                role: 'tool',
+                tool_call_id: toolCallId,
+                name: name,
+                content: toolContent
+            });
+        }
+    });
+    
+    return toolMessages;
 }
 
 // Получение messages из контекста

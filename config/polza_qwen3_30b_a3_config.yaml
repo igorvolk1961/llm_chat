@@ -1,0 +1,9 @@
+# Конфигурационный файл модели
+# vllm API (OpenAI-совместимый)
+provider_url: https://api.polza.ai/api/v1
+api_key: ak_-XOViNE9NTAEK47VB6pr0cNy08nxd2IXpX9yFZgei4A
+model_name: qwen/qwen3-30b-a3b-instruct-2507
+temperature: 0.7
+max_tokens: 4000
+system_prompt_path: prompts/default_system_prompt.txt
+
