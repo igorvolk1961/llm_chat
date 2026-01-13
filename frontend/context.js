@@ -36,8 +36,8 @@ function createMessageElement(message, index) {
     if (canEditRole) {
         // Редактируемое поле для вручную добавленных сообщений
         roleGroup.innerHTML = `
-            <label style="display: block; margin-bottom: 4px; color: #cccccc;">Role:</label>
-            <select class="message-role" style="width: 100%; padding: 8px; background-color: #1e1e1e; border: 1px solid #3e3e42; color: #d4d4d4; border-radius: 4px;">
+            <label style="display: block; margin-bottom: 4px; color: #666666;">Role:</label>
+            <select class="message-role" style="width: 100%; padding: 8px; background-color: #ffffff; border: 1px solid #d0d0d0; color: #333333; border-radius: 4px;">
                 <option value="system" ${message.role === 'system' ? 'selected' : ''}>system</option>
                 <option value="user" ${message.role === 'user' ? 'selected' : ''}>user</option>
                 <option value="assistant" ${message.role === 'assistant' ? 'selected' : ''}>assistant</option>
@@ -47,8 +47,8 @@ function createMessageElement(message, index) {
     } else {
         // Только для чтения для сообщений из чата
         roleGroup.innerHTML = `
-            <label style="display: block; margin-bottom: 4px; color: #cccccc;">Role:</label>
-            <div style="width: 100%; padding: 8px; background-color: #2d2d30; border: 1px solid #3e3e42; color: #cccccc; border-radius: 4px; user-select: none;">${message.role || 'user'}</div>
+            <label style="display: block; margin-bottom: 4px; color: #666666;">Role:</label>
+            <div style="width: 100%; padding: 8px; background-color: #f8f8f8; border: 1px solid #e0e0e0; color: #666666; border-radius: 4px; user-select: none;">${message.role || 'user'}</div>
         `;
     }
     
@@ -56,8 +56,8 @@ function createMessageElement(message, index) {
     const contentGroup = document.createElement('div');
     contentGroup.style.marginBottom = '12px';
     contentGroup.innerHTML = `
-        <label style="display: block; margin-bottom: 4px; color: #cccccc;">Content:</label>
-        <textarea class="message-content" style="width: 100%; min-height: 100px; padding: 8px; background-color: #1e1e1e; border: 1px solid #3e3e42; color: #d4d4d4; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical;">${message.content || ''}</textarea>
+        <label style="display: block; margin-bottom: 4px; color: #666666;">Content:</label>
+        <textarea class="message-content" style="width: 100%; min-height: 100px; padding: 8px; background-color: #ffffff; border: 1px solid #d0d0d0; color: #333333; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical;">${message.content || ''}</textarea>
     `;
     
     // Name input (для function/tool messages) - добавляем только если не пустое
@@ -65,8 +65,8 @@ function createMessageElement(message, index) {
         const nameGroup = document.createElement('div');
         nameGroup.style.marginBottom = '12px';
         nameGroup.innerHTML = `
-            <label style="display: block; margin-bottom: 4px; color: #cccccc;">Name (опционально):</label>
-            <input type="text" class="message-name" value="${message.name}" style="width: 100%; padding: 8px; background-color: #1e1e1e; border: 1px solid #3e3e42; color: #d4d4d4; border-radius: 4px;">
+            <label style="display: block; margin-bottom: 4px; color: #666666;">Name (опционально):</label>
+            <input type="text" class="message-name" value="${message.name}" style="width: 100%; padding: 8px; background-color: #ffffff; border: 1px solid #d0d0d0; color: #333333; border-radius: 4px;">
         `;
         nameGroup.querySelector('.message-name').addEventListener('input', (e) => {
             message.name = e.target.value.trim() || null;
@@ -83,14 +83,14 @@ function createMessageElement(message, index) {
         const toolCallsGroup = document.createElement('div');
         toolCallsGroup.style.marginBottom = '12px';
         toolCallsGroup.innerHTML = `
-            <label style="display: block; margin-bottom: 4px; color: #cccccc;">Tool Calls (опционально, JSON):</label>
-            <textarea class="message-tool-calls" style="width: 100%; min-height: 80px; padding: 8px; background-color: #1e1e1e; border: 1px solid #3e3e42; color: #d4d4d4; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical;">${JSON.stringify(message.tool_calls, null, 2)}</textarea>
+            <label style="display: block; margin-bottom: 4px; color: #666666;">Tool Calls (опционально, JSON):</label>
+            <textarea class="message-tool-calls" style="width: 100%; min-height: 80px; padding: 8px; background-color: #ffffff; border: 1px solid #d0d0d0; color: #333333; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical;">${JSON.stringify(message.tool_calls, null, 2)}</textarea>
         `;
         toolCallsGroup.querySelector('.message-tool-calls').addEventListener('input', (e) => {
             try {
                 const value = e.target.value.trim();
                 message.tool_calls = value ? JSON.parse(value) : null;
-                e.target.style.borderColor = '#3e3e42';
+                e.target.style.borderColor = '#d0d0d0';
                 // Если поле очищено, удаляем его из DOM
                 if (!message.tool_calls) {
                     toolCallsGroup.remove();
@@ -107,8 +107,8 @@ function createMessageElement(message, index) {
         const toolCallIdGroup = document.createElement('div');
         toolCallIdGroup.style.marginBottom = '12px';
         toolCallIdGroup.innerHTML = `
-            <label style="display: block; margin-bottom: 4px; color: #cccccc;">Tool Call ID (для tool messages):</label>
-            <input type="text" class="message-tool-call-id" value="${message.tool_call_id}" style="width: 100%; padding: 8px; background-color: #1e1e1e; border: 1px solid #3e3e42; color: #d4d4d4; border-radius: 4px;">
+            <label style="display: block; margin-bottom: 4px; color: #666666;">Tool Call ID (для tool messages):</label>
+            <input type="text" class="message-tool-call-id" value="${message.tool_call_id}" style="width: 100%; padding: 8px; background-color: #ffffff; border: 1px solid #d0d0d0; color: #333333; border-radius: 4px;">
         `;
         toolCallIdGroup.querySelector('.message-tool-call-id').addEventListener('input', (e) => {
             message.tool_call_id = e.target.value.trim() || null;

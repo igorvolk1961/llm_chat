@@ -143,7 +143,7 @@ async function sendRequest() {
                 // Если content нет, очищаем отображение
                 const contentOutput = document.getElementById('contentOutput');
                 if (contentOutput) {
-                    contentOutput.innerHTML = '<p style="color: #858585;">Нет данных</p>';
+                    contentOutput.innerHTML = '<p style="color: #666666;">Нет данных</p>';
                 }
             }
             
@@ -154,7 +154,7 @@ async function sendRequest() {
                 // Если tool_calls нет, очищаем отображение
                 const toolCallOutput = document.getElementById('toolCallOutput');
                 if (toolCallOutput) {
-                    toolCallOutput.innerHTML = '<p style="color: #858585;">Инструменты не использованы</p>';
+                    toolCallOutput.innerHTML = '<p style="color: #666666;">Инструменты не использованы</p>';
                 }
             }
             
@@ -316,7 +316,7 @@ async function getContextMessages() {
 
 // Простой markdown рендеринг (дублируется из output.js)
 function renderMarkdown(text) {
-    if (!text) return '<p style="color: #858585;">Нет данных</p>';
+    if (!text) return '<p style="color: #666666;">Нет данных</p>';
     
     let html = text
         .replace(/&/g, '&amp;')
@@ -328,9 +328,9 @@ function renderMarkdown(text) {
     html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    html = html.replace(/`([^`]+)`/g, '<code style="background-color: #1e1e1e; padding: 2px 4px; border-radius: 3px;">$1</code>');
+    html = html.replace(/`([^`]+)`/g, '<code style="background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; color: #333333;">$1</code>');
     html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-        return `<pre><code style="display: block; background-color: #1e1e1e; padding: 12px; border-radius: 4px; overflow-x: auto;">${code.trim()}</code></pre>`;
+        return `<pre><code style="display: block; background-color: #f8f8f8; border: 1px solid #e0e0e0; padding: 12px; border-radius: 4px; overflow-x: auto; color: #333333;">${code.trim()}</code></pre>`;
     });
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #4ec9b0;">$1</a>');
     html = html.replace(/\n/g, '<br>');

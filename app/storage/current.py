@@ -92,9 +92,28 @@ class CurrentDataStorage:
         """
         import json
         file_path = self.contexts_dir / "current_context.json"
+        messages_data = [msg.model_dump(exclude_none=True) for msg in messages]
+        
+        # Исправляем экранированные Unicode символы в arguments tool_calls
+        for msg_data in messages_data:
+            if "tool_calls" in msg_data and isinstance(msg_data["tool_calls"], list):
+                for tool_call in msg_data["tool_calls"]:
+                    if isinstance(tool_call, dict) and "function" in tool_call:
+                        function_data = tool_call["function"]
+                        if isinstance(function_data, dict) and "arguments" in function_data:
+                            arguments_str = function_data["arguments"]
+                            if isinstance(arguments_str, str):
+                                try:
+                                    # Парсим JSON строку и сериализуем обратно с ensure_ascii=False
+                                    parsed_args = json.loads(arguments_str)
+                                    function_data["arguments"] = json.dumps(parsed_args, ensure_ascii=False)
+                                except (json.JSONDecodeError, TypeError):
+                                    # Если не удалось распарсить, оставляем как есть
+                                    pass
+        
         data = {
             "name": name,
-            "messages": [msg.model_dump(exclude_none=True) for msg in messages]
+            "messages": messages_data
         }
         file_path.write_text(
             json.dumps(data, ensure_ascii=False, indent=2),

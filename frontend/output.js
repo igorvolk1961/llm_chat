@@ -11,7 +11,7 @@ function initContentTab() {
             const content = data.content || '';
             
             if (!content) {
-                contentOutput.innerHTML = '<p style="color: #858585;">Нет данных</p>';
+                contentOutput.innerHTML = '<p style="color: #666666;">Нет данных</p>';
                 return;
             }
             
@@ -24,11 +24,11 @@ function initContentTab() {
     };
     
     // Инициализация - показываем пустое состояние
-    contentOutput.innerHTML = '<p style="color: #858585;">Нет данных</p>';
+    contentOutput.innerHTML = '<p style="color: #666666;">Нет данных</p>';
     
     // Простой markdown рендеринг
     function renderMarkdown(text) {
-        if (!text) return '<p style="color: #858585;">Нет данных</p>';
+        if (!text) return '<p style="color: #666666;">Нет данных</p>';
         
         // Экранирование HTML
         let html = text
@@ -48,11 +48,11 @@ function initContentTab() {
         html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
         
         // Код inline
-        html = html.replace(/`([^`]+)`/g, '<code style="background-color: #1e1e1e; padding: 2px 4px; border-radius: 3px;">$1</code>');
+        html = html.replace(/`([^`]+)`/g, '<code style="background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; color: #333333;">$1</code>');
         
         // Блоки кода
         html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-            return `<pre><code style="display: block; background-color: #1e1e1e; padding: 12px; border-radius: 4px; overflow-x: auto;">${code.trim()}</code></pre>`;
+            return `<pre><code style="display: block; background-color: #f8f8f8; border: 1px solid #e0e0e0; padding: 12px; border-radius: 4px; overflow-x: auto; color: #333333;">${code.trim()}</code></pre>`;
         });
         
         // Ссылки
@@ -77,7 +77,7 @@ function initToolCallTab() {
             const toolCalls = data.tool_calls || [];
             
             if (toolCalls.length === 0) {
-                toolCallOutput.innerHTML = '<p style="color: #858585;">Инструменты не использованы</p>';
+                toolCallOutput.innerHTML = '<p style="color: #666666;">Инструменты не использованы</p>';
                 return;
             }
             
@@ -118,23 +118,23 @@ function initToolCallTab() {
         // Информация о tool_call (только чтение)
         const infoSection = document.createElement('div');
         infoSection.style.padding = '12px';
-        infoSection.style.backgroundColor = '#1e1e1e';
+        infoSection.style.backgroundColor = '#f8f8f8';
         infoSection.style.borderRadius = '4px';
         infoSection.innerHTML = `
             <div style="margin-bottom: 8px;">
                 <strong style="color: #007acc;">ID:</strong>
-                <span style="color: #d4d4d4; font-family: 'Consolas', 'Monaco', monospace;">${toolCall.id}</span>
+                <span style="color: #333333; font-family: 'Consolas', 'Monaco', monospace;">${toolCall.id}</span>
             </div>
             <div style="margin-bottom: 8px;">
                 <strong style="color: #007acc;">Функция:</strong>
-                <span style="color: #d4d4d4;">${toolCall.function?.name || 'N/A'}</span>
+                <span style="color: #333333;">${toolCall.function?.name || 'N/A'}</span>
             </div>
             <div>
                 <strong style="color: #007acc;">Аргументы:</strong>
-                <pre style="margin-top: 4px; padding: 8px; background-color: #252526; border-radius: 4px; overflow-x: auto;"><code style="color: #d4d4d4; font-family: 'Consolas', 'Monaco', monospace;">${JSON.stringify(JSON.parse(toolCall.function?.arguments || '{}'), null, 2)}</code></pre>
+                <pre style="margin-top: 4px; padding: 8px; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 4px; overflow-x: auto;"><code style="color: #333333; font-family: 'Consolas', 'Monaco', monospace;">${JSON.stringify(JSON.parse(toolCall.function?.arguments || '{}'), null, 2)}</code></pre>
             </div>
-            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #3e3e42;">
-                <p style="color: #858585; font-size: 0.9em;">
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
+                <p style="color: #666666; font-size: 0.9em;">
                     💡 Для ввода ответа на этот запрос инструмента перейдите на вкладку <strong>"Ответы на инструменты"</strong> в верхней панели
                 </p>
             </div>
@@ -156,7 +156,7 @@ function initToolCallTab() {
     }
     
     // Инициализация - показываем пустое состояние
-    toolCallOutput.innerHTML = '<p style="color: #858585;">Нет данных</p>';
+    toolCallOutput.innerHTML = '<p style="color: #666666;">Нет данных</p>';
 }
 
 // Вкладка Метаданные
@@ -169,7 +169,7 @@ function initMetadataTab() {
             const stats = await api.getCurrentStats();
             
             if (!stats || Object.keys(stats).length === 0) {
-                metadataOutput.innerHTML = '<p style="color: #858585;">Нет данных</p>';
+                metadataOutput.innerHTML = '<p style="color: #666666;">Нет данных</p>';
                 return;
             }
             
@@ -229,7 +229,7 @@ function initMetadataTab() {
     }
     
     // Инициализация - показываем пустое состояние
-    metadataOutput.innerHTML = '<p style="color: #858585;">Нет данных</p>';
+    metadataOutput.innerHTML = '<p style="color: #666666;">Нет данных</p>';
 }
 
 // Экспорт функций

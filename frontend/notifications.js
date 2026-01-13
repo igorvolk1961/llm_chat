@@ -18,18 +18,18 @@ function showConfirm(message, callback) {
     
     const dialog = document.createElement('div');
     dialog.style.cssText = `
-        background-color: #252526;
-        border: 1px solid #3e3e42;
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
         border-radius: 4px;
         padding: 20px;
         max-width: 400px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     `;
     
     const messageEl = document.createElement('p');
     messageEl.textContent = message;
     messageEl.style.cssText = `
-        color: #d4d4d4;
+        color: #333333;
         margin-bottom: 20px;
     `;
     
@@ -91,18 +91,18 @@ function showPrompt(message, defaultValue = '', callback) {
     
     const dialog = document.createElement('div');
     dialog.style.cssText = `
-        background-color: #252526;
-        border: 1px solid #3e3e42;
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
         border-radius: 4px;
         padding: 20px;
         max-width: 400px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     `;
     
     const messageEl = document.createElement('p');
     messageEl.textContent = message;
     messageEl.style.cssText = `
-        color: #d4d4d4;
+        color: #333333;
         margin-bottom: 12px;
     `;
     
@@ -112,9 +112,9 @@ function showPrompt(message, defaultValue = '', callback) {
     input.style.cssText = `
         width: 100%;
         padding: 8px;
-        background-color: #1e1e1e;
-        border: 1px solid #3e3e42;
-        color: #d4d4d4;
+        background-color: #ffffff;
+        border: 1px solid #d0d0d0;
+        color: #333333;
         border-radius: 4px;
         margin-bottom: 20px;
     `;
@@ -178,13 +178,13 @@ function showErrorDialog(message) {
     
     const dialog = document.createElement('div');
     dialog.style.cssText = `
-        background-color: #252526;
+        background-color: #ffffff;
         border: 1px solid #f48771;
         border-radius: 4px;
         padding: 20px;
         max-width: 600px;
         max-height: 80vh;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         display: flex;
         flex-direction: column;
     `;
@@ -200,8 +200,8 @@ function showErrorDialog(message) {
     
     const messageContainer = document.createElement('div');
     messageContainer.style.cssText = `
-        background-color: #1e1e1e;
-        border: 1px solid #3e3e42;
+        background-color: #f8f8f8;
+        border: 1px solid #e0e0e0;
         border-radius: 4px;
         padding: 12px;
         margin-bottom: 16px;
@@ -213,7 +213,7 @@ function showErrorDialog(message) {
     const messageText = document.createElement('pre');
     messageText.textContent = message;
     messageText.style.cssText = `
-        color: #d4d4d4;
+        color: #333333;
         margin: 0;
         font-family: 'Consolas', 'Monaco', monospace;
         font-size: 13px;
